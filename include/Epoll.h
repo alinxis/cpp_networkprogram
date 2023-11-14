@@ -18,8 +18,8 @@ public:
     Epoll();
     ~Epoll();
 
-    void AddFd(int fd,uint32_t option);
-    std::vector<epoll_event> Poll(int timeout = -1);
+    void addFd(int fd,uint32_t option);
+    std::vector<epoll_event> poll(int timeout = -1);
 };
 
 

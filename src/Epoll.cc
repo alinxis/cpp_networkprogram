@@ -18,14 +18,14 @@ Epoll::~Epoll(){
     if(m_epfd!=-1) close(m_epfd);
     delete[] m_events;
 }
-void Epoll::AddFd(int fd, uint32_t op){
+void Epoll::addFd(int fd, uint32_t op){
     epoll_event ev;
     bzero(&ev, sizeof(epoll_event));
     ev.data.fd = fd;
     ev.events = op;
     errorf(epoll_ctl(m_epfd, EPOLL_CTL_ADD, fd, &ev) == -1, "[ERROR] epoll add event error");
 }
-std::vector<epoll_event> Epoll::Poll(int timeout) {
+std::vector<epoll_event> Epoll::poll(int timeout) {
     std::vector<epoll_event> activeEvents;
     int nfds = epoll_wait(m_epfd,m_events,MAX_EVENTS,timeout);
     for (int i=0 ;i<nfds;i++) {
