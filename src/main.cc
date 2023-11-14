@@ -11,6 +11,7 @@
 #define BUFFER_SIZE 1024
 #define MAX_EVENTS 10
 
+//设置非阻塞状态
 void setnonblocking(int fd) {
 
     // 获取当前文件描述符的标志
@@ -28,6 +29,7 @@ void setnonblocking(int fd) {
     }
 }
 
+//处理echo事件
 void handleEvent(int fd){
     char buffer[BUFFER_SIZE];
     while(true) {    //由于使用非阻塞IO，读取客户端buffer，一次读取buf大小数据，直到全部读取完毕
