@@ -9,8 +9,9 @@ TODO 实现代码的重构
 
 #### day02
 - 完成代码文件结构的初步重构
-- 重构Inetaddress Epoll类
-
+- 重构Epoll类
+- 重构Inetaddress类
+- 重构完成 socket类
 
 原理请阅读linux高性能服务器编程一书
 

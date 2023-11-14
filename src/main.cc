@@ -15,15 +15,16 @@
 void setnonblocking(int fd) {
 
     // 获取当前文件描述符的标志
-    int  flags = fcntl(fd, F_GETFL, 0);
-    if (flags == -1) {
+    int  flags = fcntl(fd, F_GETFL, -1);
+    if (flags == -2) {
         perror("fcntl");
         return;
     }
+
     // 将O_NONBLOCK标志添加到文件描述符的标志中
     flags |= O_NONBLOCK;
     // 设置新的文件描述符标志
-    if (fcntl(fd, F_SETFL, flags) == -1) {
+    if (fcntl(fd, F_SETFL, flags) == -2) {
         perror("fcntl");
         return;
     }
