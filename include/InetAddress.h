@@ -16,6 +16,7 @@ public:
     InetAddress(){ bzero(&m_addr,sizeof(struct sockaddr_in)) ;}
     InetAddress(const char* ip, uint16_t port);
     ~InetAddress()=default;//目前使用编译器生成的就行
+    void clear(){ bzero(&m_addr,sizeof(struct sockaddr_in)); }//加入一个清空函数，方便复用
 };
 
 #endif //CPPNET_INETADDRESS_H
