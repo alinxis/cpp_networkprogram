@@ -8,10 +8,5 @@
 #include <cstdio>
 #include <cstdlib>
 
-void errorf(bool condition , const char * msg){
-    if(condition){
-        perror(msg);
-        exit(EXIT_FAILURE);
-    }
-}
+void errorf(bool condition , const char * msg);
 #endif //CPPFRAME_ERROR_H
