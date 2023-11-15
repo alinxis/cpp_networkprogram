@@ -12,6 +12,7 @@ TODO 实现代码的重构
 - 重构Epoll类
 - 重构Inetaddress类
 - 重构完成 socket类
+- 重构服务端代码
 
 原理请阅读linux高性能服务器编程一书
 
