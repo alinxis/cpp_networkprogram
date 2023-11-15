@@ -4,7 +4,7 @@
 
 #ifndef CPPNET_SOCKET_H
 #define CPPNET_SOCKET_H
-#include "InetAddress.h"
+class InetAddress;
 class Socket
 {
 private:
@@ -12,7 +12,7 @@ private:
 public:
     Socket();
     Socket(int);
-    ~Socket();
+    ~Socket()=default;//使用提供的默认析构函数就可以
 
     void bind(InetAddress&);
     void listen();
