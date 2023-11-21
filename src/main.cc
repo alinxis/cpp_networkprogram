@@ -5,32 +5,13 @@
 #include <csignal>
 #include <fcntl.h>
 
+#include "Channel.h"
 #include "Socket.h"
 #include "InetAddress.h"
 #include "Epoll.h"
 #include "error.h"
 
 #define BUFFER_SIZE 1024
-#define MAX_EVENTS 10
-
-//设置非阻塞状态
-void setnonblocking(int fd) {
-
-    // 获取当前文件描述符的标志
-    int  flags = fcntl(fd, F_GETFL, -1);
-    if (flags == -2) {
-        perror("fcntl");
-        return;
-    }
-
-    // 将O_NONBLOCK标志添加到文件描述符的标志中
-    flags |= O_NONBLOCK;
-    // 设置新的文件描述符标志
-    if (fcntl(fd, F_SETFL, flags) == -2) {
-        perror("fcntl");
-        return;
-    }
-}
 
 //处理echo事件
 void handleEvent(int fd){
@@ -62,33 +43,36 @@ void handleEvent(int fd){
 int main() {
     //创建套接字描述符
     Socket serv_socket=Socket();
-    InetAddress addr("0.0.0.0",8080);
+    InetAddress addr=InetAddress("0.0.0.0",8080);
     serv_socket.bind(addr);
     serv_socket.listen();
 
     //创建epoll 实例
     Epoll epoll;
-    epoll.addFd(serv_socket.getFd(), EPOLLIN | EPOLLET); //设置epoll 为et模式
+    Channel* server=new Channel(epoll,serv_socket.getFd());
+    server->enableReading();
 
     while (true){
-        std::vector<epoll_event> events =epoll.poll();
-        for (auto& event: events) {
+        std::vector<Channel::ptr> activeChannels =epoll.poll();
+        for (auto chan: activeChannels) {
             //如果为服务的scoket就接受连接
             InetAddress client_addr=InetAddress();
-            if(event.data.fd==serv_socket.getFd()){
+            int chfd=chan->getFd();
+            if(chfd==serv_socket.getFd()){
                 client_addr.clear();
                 int client_fd=serv_socket.accept(client_addr); //接受连接并保存连接信息
-                Socket client_socket=Socket();//创建连接的服务端
+                Socket client_socket=Socket(client_fd);//创建连接的客户端
                 client_socket.setnonblocking();
 
                 printf("new client fd %d From IP: %s Port: %d\n",
                        client_socket.getFd(), inet_ntoa(client_addr.m_addr.sin_addr),
                        ntohs(client_addr.m_addr.sin_port));
-                epoll.addFd(client_fd, EPOLLIN | EPOLLET); //添加事件
 
-            }
-            if(event.events&EPOLLIN){
-                handleEvent(event.data.fd);
+                Channel* client=new Channel(epoll,client_socket.getFd());
+                client->enableReading();//这里其实并不好，虽然代码少写一行，但是意图变得不连贯了
+
+            } else if(chan->getRevents()&EPOLLIN){//如果是客户端的话
+                handleEvent(chan->getFd());
             } else{
                 std::cout<<"[INFO] something happen"<<std::endl;
             }

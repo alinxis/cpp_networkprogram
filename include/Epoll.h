@@ -8,18 +8,22 @@
 #include <sys/epoll.h>
 #include <cstdint>
 #include <vector>
+
+class Channel;
 class Epoll {
 private:
     int m_epfd;
     epoll_event *m_events;
 
 public:
+    typedef std::shared_ptr<Epoll> ptr;
     static constexpr int MAX_EVENTS=1000;
     Epoll();
     ~Epoll();
 
     void addFd(int fd,uint32_t option);
-    std::vector<epoll_event> poll(int timeout = -1);
+    std::vector<std::shared_ptr<Channel>> poll(int timeout = -1);
+    void updateChannel(Channel* chan);
 };
 
 
