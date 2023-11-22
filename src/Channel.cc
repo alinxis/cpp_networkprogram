@@ -28,3 +28,7 @@ void Channel::enableReading() {
 void Channel::setInEpoll() {
     m_inEpoll= true;
 }
+
+void Channel::setCallBack(std::function<void()> _func) {
+    m_callback=_func;
+}

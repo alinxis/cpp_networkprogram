@@ -8,6 +8,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <functional>
 
 class Epoll;
 
@@ -18,6 +19,7 @@ private:
     uint32_t m_events = 0;          //注册时要监听的事件
     uint32_t m_revents = 0;         //Epoll 返回时发生的事件
     bool m_inEpoll = false;         //采用默认值
+    std::function<void()> m_callback;
 
 public:
     typedef std::shared_ptr<Channel> ptr;
@@ -25,15 +27,17 @@ public:
     Channel(Epoll &_ep, int _fd);
     ~Channel() = default;
 
-    void enableReading();
-
     int getFd();
     uint32_t getEvents();
     uint32_t getRevents();
-    void setRevents(uint32_t);
     bool InEpoll();
-    void setInEpoll();
 
+    void setRevents(uint32_t);
+    void setInEpoll();
+    void setCallBack(std::function<void()>);
+
+    void enableReading();
+    void handleEvent();
 };
 
 
