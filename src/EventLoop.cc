@@ -23,6 +23,6 @@ void EventLoop::Loop() {
     }
 }
 
-void EventLoop::updataChannel(Channel* chan) {
+void EventLoop::updateChannel(Channel* chan) {
     m_epoll->updateChannel(chan);
 }

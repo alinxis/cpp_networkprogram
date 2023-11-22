@@ -15,11 +15,12 @@ private:
     bool quit;
 
 public:
+    typedef std::shared_ptr<EventLoop> ptr;
     EventLoop();
     ~EventLoop();
 
     void Loop();
-    void updataChannel(Channel* );
+    void updateChannel(Channel* );
 };
 
 
