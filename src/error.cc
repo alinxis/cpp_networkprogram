@@ -1,3 +1,4 @@
+#include <iostream>
 #include "error.h"
 
 void errorf(bool condition , const char * msg){
@@ -5,4 +6,7 @@ void errorf(bool condition , const char * msg){
         perror(msg);
         exit(EXIT_FAILURE);
     }
+}
+void DEBUG(const char* msg,const char* funcname){
+    std::cout<<"[DEBUG] "<<msg<<" --Function: "<<funcname<<std::endl;
 }

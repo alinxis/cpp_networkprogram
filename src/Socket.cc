@@ -1,5 +1,6 @@
 #include <fcntl.h>
 #include <sys/socket.h>
+#include <iostream>
 
 #include "InetAddress.h"
 #include "Socket.h"
@@ -29,6 +30,7 @@ void Socket::bind(InetAddress &addr){
 }
 
 void Socket::listen(){
+    std::cout<<"[INFO] Start Listen"<<std::endl;
     errorf(::listen(m_fd, SOMAXCONN) == -1, "socket listen error");
 }
 
