@@ -9,12 +9,13 @@
 #include <cstdint>
 #include <memory>
 #include <functional>
+#include <utility>
 
-class Epoll;
+class EventLoop;
 
 class Channel {
 private:
-    std::shared_ptr<Epoll> m_epoll;
+    std::shared_ptr<EventLoop> m_eloop;
     int m_fd;                       //socketfd
     uint32_t m_events = 0;          //注册时要监听的事件
     uint32_t m_revents = 0;         //Epoll 返回时发生的事件
@@ -24,13 +25,14 @@ private:
 public:
     typedef std::shared_ptr<Channel> ptr;
 
-    Channel(Epoll &_ep, int _fd);
+    Channel(EventLoop *_loop, int _fd);
+    Channel(std::shared_ptr<EventLoop> loop,int fd):m_eloop(std::move(loop)), m_fd(fd) {}
     ~Channel() = default;
 
-    int getFd();
-    uint32_t getEvents();
-    uint32_t getRevents();
-    bool InEpoll();
+    int getFd() const;
+    uint32_t getEvents() const;
+    uint32_t getRevents() const;
+    bool InEpoll() const;
 
     void setRevents(uint32_t);
     void setInEpoll();
