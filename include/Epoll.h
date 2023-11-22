@@ -16,7 +16,7 @@ private:
     epoll_event *m_events;
 
 public:
-    typedef std::shared_ptr<Epoll> ptr;
+    typedef std::shared_ptr<Epoll> share_ptr;
     static constexpr int MAX_EVENTS=1000;
     Epoll();
     ~Epoll();
