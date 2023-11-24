@@ -24,7 +24,7 @@ void Socket::setnonblocking() {
     errorf(fcntl(m_fd, F_SETFL, flags) == -2, "[ERROR] fcntl set error");
 }
 
-void Socket::bind(InetAddress::share_ptr addr){
+void Socket::bind(InetAddress* addr){
     int errorCode=::bind(m_fd, reinterpret_cast<sockaddr*>(&addr->m_addr) , addr->m_addr_len);
     errorf( errorCode== -1, "socket bind error");
 }
@@ -35,7 +35,7 @@ void Socket::listen(){
 }
 
 
-int Socket::accept(InetAddress::unique_ptr addr){
+int Socket::accept(InetAddress* addr){
     int clnt_sockfd = ::accept(m_fd, reinterpret_cast<sockaddr*>(&addr->m_addr), &addr->m_addr_len);
     errorf(clnt_sockfd == -1, "socket accept error");
     return clnt_sockfd;
