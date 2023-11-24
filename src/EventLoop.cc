@@ -14,7 +14,7 @@ EventLoop::~EventLoop(){
 }
 
 void EventLoop::Loop() {
-    DEBUG("Loop start",__PRETTY_FUNCTION__ );
+    Debugf("Loop start", __PRETTY_FUNCTION__);
     while (!quit){
         std::vector<Channel::ptr> activeChannel=m_epoll->poll();
         for (auto chan: activeChannel){

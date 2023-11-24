@@ -1,4 +1,6 @@
 #include <sys/epoll.h>
+
+#include <utility>
 #include "Channel.h"
 #include "Epoll.h"
 #include "EventLoop.h"
@@ -23,7 +25,7 @@ void Channel::setRevents(uint32_t ev) {
 bool Channel::InEpoll() const {return m_inEpoll;}
 
 void Channel::enableReading() {
-    DEBUG("enable Reading",__PRETTY_FUNCTION__ );
+    Debugf("enable Reading", __PRETTY_FUNCTION__);
     m_events = EPOLLIN|EPOLLET;
     m_eloop->updateChannel(this);
 }
@@ -33,8 +35,8 @@ void Channel::setInEpoll() {
 }
 
 void Channel::setCallBack(std::function<void()> _func) {
-    DEBUG("set CallBack",__PRETTY_FUNCTION__ );
-    m_callback=_func;
+    Debugf("set CallBack", __PRETTY_FUNCTION__);
+    m_callback=std::move(_func);
 }
 
 void Channel::handleEvent() {

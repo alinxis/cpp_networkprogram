@@ -9,5 +9,5 @@
 #include <cstdlib>
 
 void errorf(bool condition , const char * msg);
-void DEBUG(const char* msg,const char* funcname);
+void Debugf(const char* msg, const char* funcname);
 #endif //CPPFRAME_ERROR_H

@@ -19,7 +19,7 @@ Epoll::~Epoll(){
     if(m_epfd!=-1) close(m_epfd);
     delete[] m_events;
 }
-void Epoll::addFd(int fd, uint32_t op){
+void Epoll::addFd(int fd, uint32_t op) {
     epoll_event ev;
     bzero(&ev, sizeof(epoll_event));
     ev.data.fd = fd;
@@ -57,7 +57,7 @@ std::vector<Channel::ptr> Epoll::poll(int timeout) {
      */
 }
 
-void Epoll::updateChannel(Channel *chan) {
+void Epoll::updateChannel(Channel *chan){
     epoll_event event;
     bzero(&event,sizeof(event));
     event.data.ptr=chan;

@@ -7,6 +7,8 @@ void errorf(bool condition , const char * msg){
         exit(EXIT_FAILURE);
     }
 }
-void DEBUG(const char* msg,const char* funcname){
+void Debugf(const char* msg,const char* funcname){
+#ifdef DEBUG
     std::cout<<"[DEBUG] "<<msg<<" --Function: "<<funcname<<std::endl;
+#endif
 }
