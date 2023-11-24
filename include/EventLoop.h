@@ -15,7 +15,7 @@ private:
     bool quit;
 
 public:
-    typedef std::shared_ptr<EventLoop> ptr;
+    typedef std::shared_ptr<EventLoop> shared_ptr;
     EventLoop();
     ~EventLoop();
 

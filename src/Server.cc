@@ -13,15 +13,16 @@
 #include "Acceptor.h"
 #define BUFFER_SIZE 1024
 
-Server::Server(EventLoop *ep):m_loop(ep) {
-    m_acceptor=new Acceptor(ep);
+Server::Server(EventLoop::shared_ptr& ep ):m_loop(ep) {
+
+    m_acceptor=std::make_unique<Acceptor>(ep);
     Acceptor::CallBackFunc func=std::bind(&Server::newConnection, this,std::placeholders::_1);
     m_acceptor->SetNewConnectionCallback(func);
 }
 
-Server::~Server() {
-    delete m_acceptor;
-}
+//Server::~Server() {
+//
+//}
 
 
 void Server::handleReadEvent(int fd){
@@ -52,12 +53,12 @@ void Server::handleReadEvent(int fd){
 
 void Server::newConnection(Socket *serv_sock) {
 
-    InetAddress::unique_ptr client_addr= std::make_unique<InetAddress>();
+    InetAddress* client_addr= new InetAddress();
 
     std::cout<<"[INFO] New Client From Ip:"<<inet_ntoa(client_addr->m_addr.sin_addr)<<" "
             <<"Port: "<< ntohs(client_addr->m_addr.sin_port);
 
-    Socket client_socket=Socket(serv_sock->accept(std::move(client_addr)));
+    Socket client_socket=Socket(serv_sock->accept(client_addr));
     std::cout<<"Socket Fd: "<<client_socket.getFd()<<std::endl;
 
 
@@ -67,5 +68,5 @@ void Server::newConnection(Socket *serv_sock) {
     client_chan->setCallBack(func);
     Debugf("Client channel enableReading", __PRETTY_FUNCTION__);
     client_chan->enableReading();
-
+    delete client_addr;
 }
