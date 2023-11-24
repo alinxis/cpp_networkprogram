@@ -25,8 +25,8 @@ private:
 public:
     typedef std::shared_ptr<Channel> ptr;
 
-    Channel(EventLoop *_loop, int _fd);
-    Channel(std::shared_ptr<EventLoop> loop,int fd):m_eloop(std::move(loop)), m_fd(fd) {}
+    //Channel(EventLoop *_loop, int _fd);
+    Channel(std::shared_ptr<EventLoop> loop,int fd);
     ~Channel() = default;
 
     int getFd() const;
