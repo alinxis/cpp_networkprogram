@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.26)
 project(cppNet)
-
+add_compile_definitions(-DDEBUG)
 set(CMAKE_CXX_STANDARD 17)
 file(GLOB SRC CONFIGURE_DEPENDS include/*.h src/*.cc)
 
