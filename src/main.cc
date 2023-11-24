@@ -38,9 +38,9 @@
 //}
 
 int main() {
-   EventLoop* loop=new EventLoop();
+   EventLoop::shared_ptr loop=std::make_shared<EventLoop>();
    Server *server=new Server(loop);
    loop->Loop();
 
-    return 0;
+   return 0;
 }
