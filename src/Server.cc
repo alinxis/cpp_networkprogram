@@ -10,24 +10,17 @@
 #include "InetAddress.h"
 #include "Socket.h"
 #include "error.h"
+#include "Acceptor.h"
 #define BUFFER_SIZE 1024
 
-Server::Server(EventLoop *ep) {
+Server::Server(EventLoop *ep):m_loop(ep) {
+    m_acceptor=new Acceptor(ep);
+    Acceptor::CallBackFunc func=std::bind(&Server::newConnection, this,std::placeholders::_1);
+    m_acceptor->SetNewConnectionCallback(func);
+}
 
-    m_loop=EventLoop::ptr(ep);
-    DEBUG("Init Socket",__PRETTY_FUNCTION__ );
-    //初始化socket
-    Socket* server_socket =new Socket();
-    InetAddress server_addr =InetAddress("0.0.0.0",8080);
-    server_socket->bind(server_addr);
-    server_socket->listen();
-    server_socket->setnonblocking();
-    //将sccket 事件加入到epoll示例中用于处理
-    Channel* serverChan = new Channel(m_loop,server_socket->getFd());
-    std::function<void()> handler=std::bind(&Server::newConnection,this,server_socket);
-    serverChan->setCallBack(handler);
-    DEBUG("Server channel enableReading",__PRETTY_FUNCTION__ );
-    serverChan->enableReading();
+Server::~Server() {
+    delete m_acceptor;
 }
 
 
@@ -59,18 +52,20 @@ void Server::handleReadEvent(int fd){
 
 void Server::newConnection(Socket *serv_sock) {
 
-    InetAddress client_addr=InetAddress();
-    Socket client_socket=Socket(serv_sock->accept(client_addr));
+    InetAddress::unique_ptr client_addr= std::make_unique<InetAddress>();
 
-    printf("new client fd %d From IP: %s Port: %d\n",
-           client_socket.getFd(), inet_ntoa(client_addr.m_addr.sin_addr),
-           ntohs(client_addr.m_addr.sin_port));
+    std::cout<<"[INFO] New Client From Ip:"<<inet_ntoa(client_addr->m_addr.sin_addr)<<" "
+            <<"Port: "<< ntohs(client_addr->m_addr.sin_port);
+
+    Socket client_socket=Socket(serv_sock->accept(std::move(client_addr)));
+    std::cout<<"Socket Fd: "<<client_socket.getFd()<<std::endl;
+
 
     client_socket.setnonblocking();
     Channel *client_chan=new Channel(m_loop,client_socket.getFd());
     std::function<void()> func=std::bind(&Server::handleReadEvent,this,client_socket.getFd());
     client_chan->setCallBack(func);
-    DEBUG("Client channel enableReading",__PRETTY_FUNCTION__ );
+    Debugf("Client channel enableReading", __PRETTY_FUNCTION__);
     client_chan->enableReading();
 
 }

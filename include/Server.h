@@ -9,13 +9,16 @@
 
 class EventLoop;
 class Socket;
+class Acceptor;
 class Server
 {
 private:
      std::shared_ptr<EventLoop> m_loop;
+     Acceptor* m_acceptor;
 public:
-    Server(EventLoop*);
-    ~Server()=default;
+
+    explicit Server(EventLoop*);
+    ~Server();
 
     void handleReadEvent(int);
     void newConnection(Socket *serv_sock);
