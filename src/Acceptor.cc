@@ -13,9 +13,10 @@
 #include "InetAddress.h"
 #include "Channel.h"
 
-Acceptor::Acceptor(EventLoop *_loop):m_loop(_loop)  {
+Acceptor::Acceptor(EventLoop::shared_ptr& _loop):m_loop(_loop)  {
+    std::cout<<__PRETTY_FUNCTION__<<"eloop_ptr :"<<_loop<<"  count:"<<_loop.use_count()<<std::endl;
     m_sock= new Socket();
-    m_addr=std::make_shared<InetAddress>("0.0.0.0",8080);
+    m_addr=new InetAddress("0.0.0.0",8080);
     m_sock->bind(m_addr);
     m_sock->listen();
     m_sock->setnonblocking();
@@ -29,6 +30,8 @@ Acceptor::Acceptor(EventLoop *_loop):m_loop(_loop)  {
 Acceptor::~Acceptor() {
     delete m_sock;
     delete m_acceptChannel;
+    delete m_addr;
+
 }
 
 void Acceptor::AcceptConnection() {
