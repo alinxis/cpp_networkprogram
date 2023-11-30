@@ -14,7 +14,7 @@
 #include "Channel.h"
 
 Acceptor::Acceptor(EventLoop::shared_ptr& _loop):m_loop(_loop)  {
-    std::cout<<__PRETTY_FUNCTION__<<"eloop_ptr :"<<_loop<<"  count:"<<_loop.use_count()<<std::endl;
+
     m_sock= new Socket();
     m_addr=new InetAddress("0.0.0.0",8080);
     m_sock->bind(m_addr);
@@ -35,7 +35,17 @@ Acceptor::~Acceptor() {
 }
 
 void Acceptor::AcceptConnection() {
-    newConnectionCallback(m_sock);
+
+    InetAddress* client_addr= new InetAddress();
+
+    Socket client_socket=Socket(m_sock->accept(client_addr));
+    std::cout<<"[INFO] New Client From Ip:"<<inet_ntoa(client_addr->m_addr.sin_addr)<<" "
+             <<"Port: "<< ntohs(client_addr->m_addr.sin_port)<<" "
+             <<"Socket Fd: "<<client_socket.getFd()<<std::endl;
+
+    client_socket.setnonblocking();
+    newConnectionCallback(&client_socket);
+    delete client_addr;
 }
 
 void Acceptor::SetNewConnectionCallback(std::function<void(Socket *)> _callback) {
